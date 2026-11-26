@@ -1587,15 +1587,57 @@ export default function App() {
 
     <div className="app">
 
+      <style>{`
+        @media (max-width: 768px) {
+          .app { min-height: 100vh; overflow-x: hidden; }
+          .sidebar {
+            display: flex !important;
+            position: fixed !important;
+            top: 0 !important; left: 0 !important; bottom: 0 !important;
+            width: min(280px, 85vw) !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            overflow-y: auto !important;
+            z-index: 10002 !important;
+            background: #101b35 !important;
+            transform: translateX(-110%);
+            transition: transform .25s ease !important;
+            visibility: hidden;
+          }
+          .sidebar.mobile-sidebar-open {
+            transform: translateX(0) !important;
+            visibility: visible !important;
+          }
+          .mobile-menu {
+            display: inline-flex !important;
+            align-items: center; justify-content: center;
+            min-width: 42px; min-height: 42px;
+            position: relative; z-index: 10003;
+            border: 0; background: transparent; cursor: pointer;
+          }
+          .mobile-backdrop {
+            position: fixed !important; inset: 0 !important;
+            z-index: 10001 !important;
+            background: rgba(0,0,0,.55) !important;
+            border: 0; padding: 0;
+          }
+          .main { width: 100% !important; min-width: 0 !important; margin-left: 0 !important; }
+          .topbar { width: 100%; min-width: 0; }
+          .content { min-width: 0; }
+        }
+        @media (min-width: 769px) { .mobile-backdrop { display: none !important; } }
+      `}</style>
+
       {mobileMenuOpen && (
         <button
           type="button"
           aria-label="Close navigation menu"
           onClick={() => setMobileMenuOpen(false)}
+          className="mobile-backdrop"
           style={mobileBackdropStyle}
         />
       )}
-      <aside className="sidebar" style={mobileMenuOpen ? mobileSidebarStyle : undefined}>
+      <aside className={`sidebar ${mobileMenuOpen ? "mobile-sidebar-open" : ""}`} style={mobileMenuOpen ? { ...mobileSidebarStyle, transform: "translateX(0)", visibility: "visible", background: "#101b35" } : undefined}>
 
         <div className="brand">
 
@@ -1628,6 +1670,8 @@ export default function App() {
                 setPage(label);
 
                 setSearch("");
+
+                setMobileMenuOpen(false);
 
               }}
 
@@ -1675,7 +1719,7 @@ export default function App() {
                 onClick={() => setMobileMenuOpen((open) => !open)}
               >
 
-              <Menu />
+              <Menu size={22} />
 
             </button>
 
